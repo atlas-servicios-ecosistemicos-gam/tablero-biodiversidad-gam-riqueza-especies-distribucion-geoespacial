@@ -1,0 +1,159 @@
+---
+title: "Biodiversidad de la Gran Área Metropolitana"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+---
+Servicio ecosistémico de soporte: Hábitat para la biodiversidad (riqueza de especies)
+```{r setup, include=FALSE}
+#-------------------- Paquetes --------------------
+
+library(flexdashboard)
+library(dplyr)
+library(sf)
+library(leaflet)
+library(leafem)
+library(esri2sf)
+library(raster)
+library(plotly)
+
+```
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### Mapa {data-width=600}
+```{r include=FALSE}
+
+#--------- URL de geoservicios y datos ------------
+
+url_agfs_limite_gam <-
+  "https://services9.arcgis.com/RrvMEynxDB8hycVO/arcgis/rest/services/gam_limite_gam/FeatureServer/0"
+
+url_csv_registros_presencia <-
+  "https://raw.githubusercontent.com/atlas-servicios-ecosistemicos-gam/datos-biodiversidad/main/gam/gam-registros-presencia-chordata-plantae.csv"
+
+#--------------- Objetos sf --------------
+
+# Límite de la GAM
+sf_limite_gam <- 
+  esri2sf(url_agfs_limite_gam)
+
+# Límite de la GAM (reproyectada a Web Mercator)
+sf_limite_gam_web <- 
+  sf_limite_gam %>%
+  st_transform(3857)
+
+# Capa vectorial de puntos de registros de presencia
+sf_registros_presencia <- 
+  st_read(
+    url_csv_registros_presencia, 
+    options = c("X_POSSIBLE_NAMES=decimalLongitude","Y_POSSIBLE_NAMES=decimalLatitude")
+  )
+
+```
+
+```{r}
+
+#------------------- Mapa ------------------
+
+leaflet() %>%
+  addProviderTiles(providers$OpenStreetMap.Mapnik, group = "OpenStreetMap") %>%
+  addProviderTiles(providers$Stamen.TonerLite, group = "Stamen Toner Lite") %>%
+  addProviderTiles(providers$CartoDB.DarkMatter, group = "CartoDB Dark Matter") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Imágenes de ESRI") %>%
+  addPolygons(
+    data = sf_limite_gam,
+    color = "Purple",
+    fillColor = "transparent",
+    stroke = TRUE,
+    weight = 6.0,
+    group = "Límite de la GAM"
+  ) %>%
+  addCircleMarkers(
+    data = sf_registros_presencia,
+    stroke = F,
+    radius = 4,
+    fillColor = 'red',
+    fillOpacity = 1,
+    clusterOptions = markerClusterOptions(),
+    popup = paste(sf_registros_presencia$kingdom,
+                  sf_registros_presencia$class,
+                  sf_registros_presencia$species,
+                  sf_registros_presencia$year, 
+                  sep = '<br/>'),
+    group = "Registros de presencia",
+  ) %>%  
+  addLayersControl(
+    baseGroups = c("OpenStreetMap", "Stamen Toner Lite", "CartoDB Dark Matter", "Imágenes de ESRI"),
+    overlayGroups = c("Límite de la GAM", "Registros de presencia"),
+    options = layersControlOptions(collapsed = TRUE)    
+  ) %>%  
+  addScaleBar(
+    position = "bottomright",
+    options = scaleBarOptions(imperial = FALSE)
+  ) %>%
+  addMouseCoordinates()
+```
+
+### Gráfico {data-width=400}
+```{r}
+
+# Vector de tipos de aves migratorias
+categorias <- c("Migrantes continentales", "Migrantes altitudinales", "Residentes")
+# Vector de valores
+valores <- c(13, 54, 33)
+tipos_migratorias <- 
+  data.frame(
+    categoria = categorias, 
+    valor = valores
+  )
+datos <- tipos_migratorias[,c('categoria', 'valor')]
+fig <- plot_ly(datos, labels = ~categorias, values = ~valores, type = 'pie')
+fig <- fig %>% layout(title = 'Tipo de aves migratorias',
+                      xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+                      yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+
+fig
+
+```
+
+Row {data-height=350}
+-----------------------------------------------------------------------
+
+### Aves {.value-box} {data-width=200}
+```{r}
+valueBox(
+  value = "Aves", 
+  caption = "643 especies"
+)
+```
+
+### Mamíferos {.value-box} {data-width=200}
+```{r}
+valueBox(
+  value = "Mamíferos",
+  caption = "30 especies"
+)
+```
+
+### Anfibios {.value-box} {data-width=200}
+```{r}
+valueBox(value = "Anfibios", 
+  caption = "38 especies"
+)
+```
+
+### Reptiles {.value-box} {data-width=200}
+```{r}
+valueBox(value = "Reptiles", 
+  caption = "41 especies"
+)
+```
+
+### Flora {.value-box} {data-width=200}
+```{r}
+valueBox(value = "Flora", 
+  caption = "3021 especies"
+)
+```
