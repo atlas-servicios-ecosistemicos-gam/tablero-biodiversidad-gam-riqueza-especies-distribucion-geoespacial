@@ -18,7 +18,7 @@ library(plotly)
 
 ```
 
-Row {data-height=750}
+Row {data-height=800}
 -----------------------------------------------------------------------
 
 ### Mapa {data-width=600}
@@ -117,7 +117,7 @@ fig
 
 ```
 
-Row {data-height=250}
+Row {data-height=200}
 -----------------------------------------------------------------------
 
 ### Aves {.value-box} {data-width=200}
