@@ -14,7 +14,6 @@ library(sf)
 library(leaflet)
 library(leafem)
 library(esri2sf)
-library(raster)
 library(plotly)
 
 ```
@@ -86,7 +85,7 @@ leaflet() %>%
   ) %>%  
   addLayersControl(
     baseGroups = c("OpenStreetMap", "Stamen Toner Lite", "CartoDB Dark Matter", "Imágenes de ESRI"),
-    overlayGroups = c("Límite de la GAM", "Registros de presencia"),
+    overlayGroups = c("Límite de la GAM", "Registros de presencia de especies"),
     options = layersControlOptions(collapsed = TRUE)    
   ) %>%  
   addScaleBar(
