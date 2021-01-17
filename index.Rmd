@@ -225,9 +225,9 @@ valueBox(
 )
 ```
 
-### Flora {.value-box} {data-width=200}
+### Plantas {.value-box} {data-width=200}
 ```{r}
-valueBox(value = "Flora", 
+valueBox(value = "Plantas", 
   caption = paste(especies_plantae, "especies")
 )
 ```
