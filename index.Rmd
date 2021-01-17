@@ -4,7 +4,7 @@ output:
   flexdashboard::flex_dashboard:
     orientation: rows
 ---
-Servicio ecosistémico de soporte: Hábitat para la biodiversidad (riqueza de especies) (Fuente: [GBIF](https://www.gbif.org/occurrence/download/0002762-200127171203522))
+
 ```{r setup, include=FALSE}
 #-------------------- Paquetes --------------------
 
@@ -18,10 +18,14 @@ library(plotly)
 
 ```
 
+Row {data-height=10}
+-----------------------------------------------------------------------
+### **Servicio ecosistémico de soporte: Hábitat para la biodiversidad (riqueza de especies). Fuente de los datos: [Infraestructura Global de Información en Biodiversidad (GBIF)](https://www.gbif.org/occurrence/download/0002762-200127171203522). Se incluyen los registros de presencia de especies detectadas desde el año 2000.**
+
 Row {data-height=800}
 -----------------------------------------------------------------------
 
-### Mapa {data-width=600}
+### {data-width=600}
 ```{r include=FALSE}
 
 #--------- URL de geoservicios y datos ------------
@@ -32,7 +36,12 @@ url_agfs_limite_gam <-
 url_csv_registros_presencia <-
   "https://raw.githubusercontent.com/atlas-servicios-ecosistemicos-gam/datos-biodiversidad/main/gam/gam-registros-presencia-chordata-plantae.csv"
 
-#--------------- Objetos sf --------------
+#------------------- Constantes -------------------
+
+# Año límite inferior del periodo de datos a considerar
+ANYO_LIMITE_INFERIOR = "2000"
+
+#---------------- Objetos sf y df -----------------
 
 # Límite de la GAM
 sf_limite_gam <- 
@@ -48,7 +57,73 @@ sf_registros_presencia <-
   st_read(
     url_csv_registros_presencia, 
     options = c("X_POSSIBLE_NAMES=decimalLongitude","Y_POSSIBLE_NAMES=decimalLatitude")
-  )
+  )  %>%
+  filter((taxonRank == "SPECIES" | taxonRank == "SUBSPECIES" | taxonRank == "VARIETY" | taxonRank == "FORM") & year >= ANYO_LIMITE_INFERIOR)
+
+
+# AVES
+# Registros de presencia de aves agrupados por especie
+df_registros_presencia_aves_agrupados_por_especie <-
+  sf_registros_presencia %>%
+  st_drop_geometry() %>%
+  filter(class == "Aves") %>%
+  dplyr::count(species)
+
+# Cantidad de especies de aves
+especies_aves <-
+  nrow(df_registros_presencia_aves_agrupados_por_especie)
+
+
+# ANFIBIOS
+# Registros de presencia de anfibios agrupados por especie
+df_registros_presencia_amphibia_agrupados_por_especie <-
+  sf_registros_presencia %>%
+  st_drop_geometry() %>%
+  filter(class == "Amphibia") %>%
+  dplyr::count(species)
+
+# Cantidad de especies de anfibios
+especies_amphibia <-
+  nrow(df_registros_presencia_amphibia_agrupados_por_especie)
+
+
+# REPTILES
+# Registros de presencia de reptiles agrupados por especie
+df_registros_presencia_reptilia_agrupados_por_especie <-
+  sf_registros_presencia %>%
+  st_drop_geometry() %>%
+  filter(class == "Reptilia") %>%
+  dplyr::count(species)
+
+# Cantidad de especies de reptiles
+especies_reptilia <-
+  nrow(df_registros_presencia_reptilia_agrupados_por_especie)
+
+
+# MAMÍFEROS
+# Registros de presencia de mamíferos agrupados por especie
+df_registros_presencia_mammalia_agrupados_por_especie <-
+  sf_registros_presencia %>%
+  st_drop_geometry() %>%
+  filter(class == "Mammalia") %>%
+  dplyr::count(species)
+
+# Cantidad de especies de mamíferos
+especies_mammalia <-
+  nrow(df_registros_presencia_mammalia_agrupados_por_especie)
+
+
+# PLANTAS
+# Registros de presencia de plantas agrupados por especie
+df_registros_presencia_plantae_agrupados_por_especie <-
+  sf_registros_presencia %>%
+  st_drop_geometry() %>%
+  filter(kingdom == "Plantae") %>%
+  dplyr::count(species)
+
+# Cantidad de especies de plantas
+especies_plantae <-
+  nrow(df_registros_presencia_plantae_agrupados_por_especie)
 
 ```
 
@@ -95,7 +170,7 @@ leaflet() %>%
   addMouseCoordinates()
 ```
 
-### Gráfico {data-width=400}
+### {data-width=400}
 ```{r}
 
 # Vector de tipos de aves migratorias
@@ -117,14 +192,28 @@ fig
 
 ```
 
-Row {data-height=200}
+Row {data-height=190}
 -----------------------------------------------------------------------
 
 ### Aves {.value-box} {data-width=200}
 ```{r}
 valueBox(
   value = "Aves", 
-  caption = "643 especies"
+  caption = paste(especies_aves, "especies")
+)
+```
+
+### Anfibios {.value-box} {data-width=200}
+```{r}
+valueBox(value = "Anfibios", 
+  caption = paste(especies_amphibia, "especies")
+)
+```
+
+### Reptiles {.value-box} {data-width=200}
+```{r}
+valueBox(value = "Reptiles", 
+  caption = paste(especies_reptilia, "especies")
 )
 ```
 
@@ -132,27 +221,13 @@ valueBox(
 ```{r}
 valueBox(
   value = "Mamíferos",
-  caption = "30 especies"
-)
-```
-
-### Anfibios {.value-box} {data-width=200}
-```{r}
-valueBox(value = "Anfibios", 
-  caption = "38 especies"
-)
-```
-
-### Reptiles {.value-box} {data-width=200}
-```{r}
-valueBox(value = "Reptiles", 
-  caption = "41 especies"
+  caption = paste(especies_mammalia, "especies")
 )
 ```
 
 ### Flora {.value-box} {data-width=200}
 ```{r}
 valueBox(value = "Flora", 
-  caption = "3021 especies"
+  caption = paste(especies_plantae, "especies")
 )
 ```
