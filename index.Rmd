@@ -20,7 +20,7 @@ library(plotly)
 
 Row {data-height=10}
 -----------------------------------------------------------------------
-### **Servicio ecosistémico de soporte: Hábitat para la biodiversidad (riqueza de especies). Fuente de los datos: [Infraestructura Global de Información en Biodiversidad (GBIF)](https://www.gbif.org/occurrence/download/0002762-200127171203522). Se incluyen los registros de presencia de especies detectadas a partir del año 2000.**
+### **Servicio ecosistémico de soporte: Hábitat para la biodiversidad (riqueza de especies). Fuente de los datos: [Infraestructura Global de Información en Biodiversidad (GBIF)](https://www.gbif.org/occurrence/download/0002762-200127171203522). Se incluyen los registros de presencia de especies detectadas desde el año 2000.**
 
 Row {data-height=800}
 -----------------------------------------------------------------------
