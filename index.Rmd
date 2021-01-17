@@ -25,7 +25,7 @@ Row {data-height=10}
 Row {data-height=800}
 -----------------------------------------------------------------------
 
-### {data-width=600}
+### Registros de presencia de especies {data-width=600}
 ```{r include=FALSE}
 
 #--------- URL de geoservicios y datos ------------
