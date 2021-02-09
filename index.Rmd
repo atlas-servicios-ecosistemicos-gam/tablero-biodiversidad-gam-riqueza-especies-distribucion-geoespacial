@@ -20,7 +20,7 @@ library(plotly)
 
 Row {data-height=10}
 -----------------------------------------------------------------------
-### **Servicio ecosistémico de soporte: Hábitat para la biodiversidad (riqueza de especies). Fuente de los datos: [Infraestructura Global de Información en Biodiversidad (GBIF)](https://www.gbif.org/occurrence/download/0002762-200127171203522). Se incluyen los registros de presencia de especies identificadas entre 2000 y 2020.**
+### **Servicio ecosistémico de soporte: Hábitat para la biodiversidad (riqueza de especies). Fuente de los datos: [Infraestructura Global de Información en Biodiversidad (GBIF)](https://doi.org/10.15468/dl.653aqp). Se incluyen los registros de presencia de especies identificadas entre 2000 y 2019.**
 
 Row {data-height=800}
 -----------------------------------------------------------------------
@@ -41,6 +41,9 @@ url_csv_registros_presencia <-
 # Año límite inferior del periodo de datos a considerar
 ANYO_LIMITE_INFERIOR = "2000"
 
+# Año límite superior del periodo de datos a considerar
+ANYO_LIMITE_SUPERIOR = "2019"
+
 #---------------- Objetos sf y df -----------------
 
 # Límite de la GAM
@@ -58,7 +61,7 @@ sf_registros_presencia <-
     url_csv_registros_presencia, 
     options = c("X_POSSIBLE_NAMES=decimalLongitude","Y_POSSIBLE_NAMES=decimalLatitude")
   )  %>%
-  filter((taxonRank == "SPECIES" | taxonRank == "SUBSPECIES" | taxonRank == "VARIETY" | taxonRank == "FORM") & year >= ANYO_LIMITE_INFERIOR)
+  filter((taxonRank == "SPECIES" | taxonRank == "SUBSPECIES" | taxonRank == "VARIETY" | taxonRank == "FORM") & year >= ANYO_LIMITE_INFERIOR & year <= ANYO_LIMITE_SUPERIOR)
 
 
 # AVES
@@ -199,21 +202,21 @@ Row {data-height=190}
 ```{r}
 valueBox(
   value = "Aves", 
-  caption = paste(especies_aves, "especies")
+  caption = paste("<h2><strong>", especies_aves, "especies", "</h2></strong>")
 )
 ```
 
 ### Anfibios {.value-box} {data-width=200}
 ```{r}
 valueBox(value = "Anfibios", 
-  caption = paste(especies_amphibia, "especies")
+  caption = paste("<h2><strong>", especies_amphibia, "especies", "</h2></strong>")
 )
 ```
 
 ### Reptiles {.value-box} {data-width=200}
 ```{r}
 valueBox(value = "Reptiles", 
-  caption = paste(especies_reptilia, "especies")
+  caption = paste("<h2><strong>", especies_reptilia, "especies", "</h2></strong>")
 )
 ```
 
@@ -221,13 +224,13 @@ valueBox(value = "Reptiles",
 ```{r}
 valueBox(
   value = "Mamíferos",
-  caption = paste(especies_mammalia, "especies")
+  caption = paste("<h2><strong>", especies_mammalia, "especies", "</h2></strong>")
 )
 ```
 
 ### Plantas {.value-box} {data-width=200}
 ```{r}
 valueBox(value = "Plantas", 
-  caption = paste(especies_plantae, "especies")
+  caption = paste("<h2><strong>", especies_plantae, "especies", "</h2></strong>")
 )
 ```
