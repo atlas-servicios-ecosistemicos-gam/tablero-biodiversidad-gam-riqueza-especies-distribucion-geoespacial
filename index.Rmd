@@ -12,6 +12,7 @@ library(flexdashboard)
 library(dplyr)
 library(sf)
 library(leaflet)
+library(leaflet.extras)
 library(leafem)
 library(esri2sf)
 library(plotly)
@@ -170,7 +171,9 @@ leaflet() %>%
     position = "bottomright",
     options = scaleBarOptions(imperial = FALSE)
   ) %>%
-  addMouseCoordinates()
+  addMouseCoordinates() %>%
+  addSearchOSM() %>%
+  addResetMapButton()
 ```
 
 ### {data-width=400}
